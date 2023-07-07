@@ -10,14 +10,13 @@ Assumes PG has already been set. Otherwise wait.
 ```shell
 python manage.py makemigrations [app]	# [app] is optional
 python manage.py migrate				# Run all staged migrations
-
 ```
 
-# Create App
+## Create App
 
 To create and add an app to the project FOUR things must be done.
 
-## Create the app
+### Create the app
 
 Here we create an app called `pages`, which will hold static html.
 
@@ -25,7 +24,7 @@ Here we create an app called `pages`, which will hold static html.
 python manage.py startapp pages
 ```
 
-## Add app to PROJECT settings.py
+### Add app to PROJECT settings.py
 
 ```shell
 # django_project/settings.py
@@ -42,7 +41,7 @@ INSTALLED_APPS = [
 ]
 ```
 
-## Update PROJECT urls.py to include APP urls
+### Update PROJECT urls.py to include APP urls
 
 ```shell
 # django_project/urls.py
@@ -55,7 +54,7 @@ urlpatterns = [
 ]
 ```
 
-## Create APP urls.py
+### Create APP urls.py
 
 ```shell
 #app/urls.py
@@ -68,7 +67,7 @@ urlpatterns = [
 ]
 ```
 
-## Update APP models.py (optional)
+### Update APP models.py (optional)
 
 ```shell
 #app/models.py
@@ -77,7 +76,7 @@ class HomePage(models.Model):				# new
 	pass
 ```
 
-## Update APP views.py
+### Update APP views.py
 
 ```shell
 #app/views.py
@@ -90,7 +89,7 @@ class HomePageListView(ListView):			# new
     template_name = "static/html/home_list.html"
 ```
 
-## Create APP templates (optional)
+### Create APP templates (optional)
 
 Update project settings.py
 
@@ -111,18 +110,15 @@ mkdir templates
 touch templates/_base.html templates/home.html
 ```
 
-## Write APP
-
-# Create Superuser
+## Create Superuser
 
 ```shell
 python manage.py createsuperuser
 ```
 
-# Collect Static
+## Collect Static
 
-run the command python manage.py collectstatic which will combine all static
-files into a new staticfiles directory.
+Run the command `python manage.py collectstatic` which will combine all static files into a new staticfiles directory.
 
 ```shell
 $ docker-compose exec web python manage.py collectstatic
@@ -130,9 +126,23 @@ $ docker-compose exec web python manage.py collectstatic
 ```
 
 This will create a staticfiles directory with four subdirectories:
-admin, css, images, and js. The first one is the static assets of the Django admin app and the other three we specified. That’s why there are 122 files copied over.
+admin, css, images, and js. The first one is the static assets of the Django admin app and the other three we specified. That’s why there are 131 files copied over.
 
-# Run tests
+Staticfiles settings are set in `django_project/settings.py`
+
+```shell
+...
+# https://docs.djangoproject.com/en/4.0/ref/settings/#std:setting-STATICFILES_DIRS
+# The next two variables define the collection point where 'collectstatic' will combine files.
+STATICFILES_DIRS = [BASE_DIR / "static"]
+# https://docs.djangoproject.com/en/4.0/ref/settings/#std-setting-STATIC_ROOT
+STATIC_ROOT = BASE_DIR / "staticfiles"
+# File storage engine used when collecting static files with 'collectstatic'.
+# This is already the default, but set here explicitly for clarity.
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+```
+
+## Run tests
 
 ```shell
 python manage.py test
