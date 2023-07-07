@@ -1,15 +1,17 @@
 
 # Startproject
 
+***This template is a work in progress.***
+
 ```shell
 django-admin startproject django_project .
 ```
 
-Assumes PG has already been set. Otherwise wait.
+Assumes PG has already been configured in `django_project/settings.py`. Otherwise wait.
 
 ```shell
-python manage.py makemigrations [app]	# [app] is optional
-python manage.py migrate				# Run all staged migrations
+python manage.py makemigrations [app]   # [app] is optional
+python manage.py migrate                # Run all staged migrations
 ```
 
 ## Create App
@@ -37,12 +39,12 @@ INSTALLED_APPS = [
 	"django.contrib.messages",
 	"django.contrib.staticfiles",
 	# Local
-	"pages.apps.PagesConfig", 				# new
+	"pages.apps.PagesConfig",              # new
 ]
 ```
 
 ### Update PROJECT urls.py to include APP urls
-
+ 				
 ```shell
 # django_project/urls.py
 
@@ -50,7 +52,7 @@ from django.contrib import admin
 from django.urls import path, include
 urlpatterns = [
 	path("admin/", admin.site.urls),
-	path("", include("pages.urls")),		# new
+	path("", include("pages.urls")),        # new
 ]
 ```
 
@@ -63,7 +65,7 @@ from django.urls import path
 from .views import home_page_view
 
 urlpatterns = [
-	path("", home_page_view, name="home")	# new
+	path("", home_page_view, name="home")   # new
 ]
 ```
 
@@ -72,8 +74,8 @@ urlpatterns = [
 ```shell
 #app/models.py
 
-class HomePage(models.Model):				# new
-	pass
+class HomePage(models.Model):               # new
+    pass
 ```
 
 ### Update APP views.py
@@ -81,9 +83,9 @@ class HomePage(models.Model):				# new
 ```shell
 #app/views.py
 
-from .models import HomePage  				# new
+from .models import HomePage                # new
 
-class HomePageListView(ListView):			# new
+class HomePageListView(ListView):           # new
     model = HomePage
     context_object_name = "home_list"
     template_name = "static/html/home_list.html"
@@ -99,7 +101,7 @@ Update project settings.py
 TEMPLATES = [
 	{
 		...
-		"DIRS": [BASE_DIR / "templates"],	# new
+		"DIRS": [BASE_DIR / "templates"],   # new
 		...
 	}
 ]
