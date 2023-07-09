@@ -1,11 +1,11 @@
-import uuid  # new
-from django.contrib.auth import get_user_model  # new
+import uuid
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 
 
 class Book(models.Model):
-    id = models.UUIDField(  # new
+    id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False)
@@ -20,7 +20,7 @@ class Book(models.Model):
         return reverse("book_detail", args=[str(self.id)])
 
 
-class Review(models.Model):  # new
+class Review(models.Model):
     book = models.ForeignKey(
         Book,
         on_delete=models.CASCADE,

@@ -7,7 +7,7 @@ urlpatterns = [
     path("login/", admin.site.urls),
     # Local apps
     path("", include("pages.urls")),
-    path("books/", include("books.urls")),  # new
+    path("books/", include("books.urls")),
 ]
 
 if settings.DEBUG:

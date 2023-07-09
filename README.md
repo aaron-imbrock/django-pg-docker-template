@@ -32,27 +32,27 @@ python manage.py startapp pages
 # django_project/settings.py
 
 INSTALLED_APPS = [
-	"django.contrib.admin",
-	"django.contrib.auth",
-	"django.contrib.contenttypes",
-	"django.contrib.sessions",
-	"django.contrib.messages",
-	"django.contrib.staticfiles",
-	# Local
-	"pages.apps.PagesConfig",              # new
+    "django.contrib.admin",
+     "django.contrib.auth",
+     "django.contrib.contenttypes",
+     "django.contrib.sessions",
+     "django.contrib.messages",
+     "django.contrib.staticfiles",
+     # Local
+     "pages.apps.PagesConfig",
 ]
 ```
 
 ### Update PROJECT urls.py to include APP urls
- 				
+     
 ```shell
 # django_project/urls.py
 
 from django.contrib import admin
 from django.urls import path, include
 urlpatterns = [
-	path("admin/", admin.site.urls),
-	path("", include("pages.urls")),        # new
+ path("admin/", admin.site.urls),
+ path("", include("pages.urls")),        # new
 ]
 ```
 
@@ -65,7 +65,7 @@ from django.urls import path
 from .views import home_page_view
 
 urlpatterns = [
-	path("", home_page_view, name="home")   # new
+ path("", home_page_view, name="home")   # new
 ]
 ```
 
@@ -99,11 +99,11 @@ Update project settings.py
 #django_project/settings.py
 
 TEMPLATES = [
-	{
-		...
-		"DIRS": [BASE_DIR / "templates"],   # new
-		...
-	}
+ {
+  ...
+  "DIRS": [BASE_DIR / "templates"],   # new
+  ...
+ }
 ]
 ```
 
