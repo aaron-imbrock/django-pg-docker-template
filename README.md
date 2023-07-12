@@ -17,42 +17,66 @@ python manage.py migrate                # Run all staged migrations
 ## Create App
 
 To create and add an app to the project FOUR things must be done.
+Start with the Models, then the URLs, and then the Views, and finally Templates.
 
 ### Create the app
 
 Here we create an app called `pages`, which will hold static html.
+It's meant as an example.
+
+### Create and add app to PROJECT settings.py
 
 ```shell
 python manage.py startapp pages
 ```
 
-### Add app to PROJECT settings.py
-
 ```shell
 # django_project/settings.py
 
 INSTALLED_APPS = [
-	"django.contrib.admin",
-	"django.contrib.auth",
-	"django.contrib.contenttypes",
-	"django.contrib.sessions",
-	"django.contrib.messages",
-	"django.contrib.staticfiles",
-	# Local
-	"pages.apps.PagesConfig",              # new
+    "django.contrib.admin",
+     "django.contrib.auth",
+     "django.contrib.contenttypes",
+     "django.contrib.sessions",
+     "django.contrib.messages",
+     "django.contrib.staticfiles",
+     # Local
+     "pages.apps.PagesConfig",
 ]
 ```
 
+### Update App models.py
+
+```shell
+# books/models.py
+from django.db import models
+
+class Book(models.Model):
+    title = models.CharField(max_length=200)
+    author = models.CharField(max_length=200)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __str__(self):
+        return self.title
+```
+
+#### Create migration records, apply them
+
+```shell
+python manage.py makemigrations
+python manage.py migrate
+```
+
 ### Update PROJECT urls.py to include APP urls
- 				
+
 ```shell
 # django_project/urls.py
 
 from django.contrib import admin
 from django.urls import path, include
 urlpatterns = [
-	path("admin/", admin.site.urls),
-	path("", include("pages.urls")),        # new
+ path("admin/", admin.site.urls),
+ path("", include("pages.urls")),        # new
 ]
 ```
 
@@ -65,17 +89,8 @@ from django.urls import path
 from .views import home_page_view
 
 urlpatterns = [
-	path("", home_page_view, name="home")   # new
+ path("", home_page_view, name="home")   # new
 ]
-```
-
-### Update APP models.py (optional)
-
-```shell
-#app/models.py
-
-class HomePage(models.Model):               # new
-    pass
 ```
 
 ### Update APP views.py
@@ -99,11 +114,11 @@ Update project settings.py
 #django_project/settings.py
 
 TEMPLATES = [
-	{
-		...
-		"DIRS": [BASE_DIR / "templates"],   # new
-		...
-	}
+ {
+  ...
+  "DIRS": [BASE_DIR / "templates"],   # new
+  ...
+ }
 ]
 ```
 

@@ -1,9 +1,11 @@
-
 import os
 from pathlib import Path
+import socket
 
 # ENV variables are set in docker-compose*.yml, which in turn uses the .env* files
 
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,9 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 DEBUG = int(os.environ.get("DJANGO_DEBUG", default=True))
-# ALLOWED_HOSTS = [".herokuapp.com", "localhost", "127.0.0.1"]  # new
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
-
 
 # Application definition
 
@@ -33,8 +33,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
     # Local
     # "accounts.apps.AccountsConfig",
-    "pages.apps.PagesConfig",  # new
-    "books.apps.BooksConfig",  # new
+    "pages.apps.PagesConfig",
+    "books.apps.BooksConfig",
 ]
 
 MIDDLEWARE = [
@@ -54,7 +54,7 @@ ROOT_URLCONF = "django_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],  # new
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -96,16 +96,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "UTC"
-
 USE_I18N = True
-
 USE_TZ = True
 
 
@@ -128,17 +124,15 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = "accounts.CustomUser"  # new
+AUTH_USER_MODEL = "accounts.CustomUser"
 
 # django-crispy-forms
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"  # new
-CRISPY_TEMPLATE_PACK = "bootstrap5"  # new
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 # django-allauth config
 LOGIN_REDIRECT_URL = "home"
-AUTHENTICATION_BACKENDS = (
-    "django.contrib.auth.backends.ModelBackend",
-)
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 MEDIA_URL = "/media/"
