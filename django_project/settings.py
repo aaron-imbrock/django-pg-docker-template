@@ -3,6 +3,11 @@ from pathlib import Path
 import socket
 
 # ENV variables are set in docker-compose*.yml, which in turn uses the .env* files
+# from environs import Env
+
+# env = Env()
+# env.read_env()
+
 
 hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
 INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
@@ -14,8 +19,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-DEBUG = int(os.environ.get("DJANGO_DEBUG", default=True))
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+DEBUG = os.environ.get("DJANGO_DEBUG", default=True)
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ") + INTERNAL_IPS
+print(f"""
+    Allowed hosts are: {ALLOWED_HOSTS}
+    Internal IP is: {INTERNAL_IPS}
+    """)
 
 # Application definition
 
@@ -32,7 +41,7 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "debug_toolbar",
     # Local
-    # "accounts.apps.AccountsConfig",
+    "accounts.apps.AccountsConfig",
     "pages.apps.PagesConfig",
     "books.apps.BooksConfig",
 ]
@@ -74,8 +83,16 @@ WSGI_APPLICATION = "django_project.wsgi.application"
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    "default": env.dj_db_url("DATABASE_URL", default="postgres://postgres@db/postgres")
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+        "NAME": os.environ.get("SQL_DATABASE", "postgres"),
+        "USER": os.environ.get("SQL_USER", "postgres"),
+        "PASSWORD": os.environ.get("SQL_PASSWORD", "postgres"),
+        "HOST": os.environ.get("SQL_HOST", "db"),
+        "PORT": os.environ.get("SQL_PORT", 5432),
+    }
 }
+
 
 
 # Password validation
