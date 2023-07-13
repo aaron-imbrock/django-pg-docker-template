@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "debug_toolbar",
+    'storages',
     # Local
     "accounts.apps.AccountsConfig",
     "pages.apps.PagesConfig",
@@ -124,17 +125,41 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
+STORAGE_DESTINATION = os.environ.get('STORAGE_DESTINATION')
 
-STATIC_URL = "static/"
-# https://docs.djangoproject.com/en/4.0/ref/settings/#std:setting-STATICFILES_DIRS
-# The next two variables define the collection point where 'collectstatic' will combine files.
-STATICFILES_DIRS = [BASE_DIR / "static"]
-# https://docs.djangoproject.com/en/4.0/ref/settings/#std-setting-STATIC_ROOT
-STATIC_ROOT = BASE_DIR / "staticfiles"
-# File storage engine used when collecting static files with 'collectstatic'.
-# This is already the default, but set here explicitly for clarity.
-# TODO: Migrate to S3 Bucket
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
+if STORAGE_DESTINATION == 's3':
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_DEFAULT_ACL = 'public-read'
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    # static files settings
+    AWS_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
+    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    # public media settings
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'core.storage_backends.PublicMediaStorage'
+
+    #pivate media
+    PRIVATE_MEDIA_LOCATION = 'private'
+    PRIVATE_FILE_STORAGE = 'core.storage_backends.PrivateMediaStorage'
+else:
+    STATIC_URL = "static/"
+    # https://docs.djangoproject.com/en/4.0/ref/settings/#std:setting-STATICFILES_DIRS
+    # The next two variables define the collection point where 'collectstatic' will combine files.
+    STATICFILES_DIRS = [BASE_DIR / "static"]
+    # https://docs.djangoproject.com/en/4.0/ref/settings/#std-setting-STATIC_ROOT
+    STATIC_ROOT = BASE_DIR / "staticfiles"
+    # File storage engine used when collecting static files with 'collectstatic'.
+    # This is already the default, but set here explicitly for clarity.
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -151,6 +176,4 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 LOGIN_REDIRECT_URL = "home"
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, MEDIA_URL)
+
