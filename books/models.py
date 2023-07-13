@@ -20,6 +20,11 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse("book_detail", args=[str(self.id)])
 
+    class Meta:
+        indexes = [
+            models.Index(fields=["id"], name="id_index"),
+        ]
+
 
 class Review(models.Model):
     book = models.ForeignKey(

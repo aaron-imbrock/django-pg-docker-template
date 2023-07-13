@@ -8,9 +8,6 @@ import socket
 # env = Env()
 # env.read_env()
 
-
-hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
-INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,11 +17,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
 DEBUG = os.environ.get("DJANGO_DEBUG", default=True)
+
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ") + INTERNAL_IPS
-print(f"""
-    Allowed hosts are: {ALLOWED_HOSTS}
-    Internal IP is: {INTERNAL_IPS}
-    """)
 
 # Application definition
 
@@ -135,19 +131,17 @@ if STORAGE_DESTINATION == 's3':
     AWS_DEFAULT_ACL = 'public-read'
     AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+    # TODO: Sort out why covers/ exists under /static/ when $MEDIA_* are set
+    # TODO: https://docs.djangoproject.com/en/4.2/topics/files/
     # static files settings
     AWS_LOCATION = 'static'
     STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/'
     STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
     # public media settings
-    PUBLIC_MEDIA_LOCATION = 'media'
-    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
-    DEFAULT_FILE_STORAGE = 'core.storage_backends.PublicMediaStorage'
-
-    #pivate media
-    PRIVATE_MEDIA_LOCATION = 'private'
-    PRIVATE_FILE_STORAGE = 'core.storage_backends.PrivateMediaStorage'
+    MEDIA_ROOT= 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_ROOT}/'
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 else:
     STATIC_URL = "static/"
     # https://docs.djangoproject.com/en/4.0/ref/settings/#std:setting-STATICFILES_DIRS
@@ -177,3 +171,9 @@ LOGIN_REDIRECT_URL = "home"
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 
+
+
+print(f"""
+    Allowed hosts are: {ALLOWED_HOSTS}
+    Internal IP is: {INTERNAL_IPS}
+    """)
