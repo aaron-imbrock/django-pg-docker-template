@@ -123,6 +123,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 STORAGE_DESTINATION = os.environ.get('STORAGE_DESTINATION')
 
+# TODO: django 4.2 migration
+# STORAGES = {
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+#     "mediafiles": {
+#         "BACKEND": "'storages.backends.s3boto3.S3Boto3Storage",
+#     },
+#     "default": {
+#         "BACKEND": "django.core.files.storage.FileSystemStorage",
+#     },
+# }
+
+
 if STORAGE_DESTINATION == 's3':
     AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
