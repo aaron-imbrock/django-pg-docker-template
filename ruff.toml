@@ -1,0 +1,10 @@
+# Enable flake8-bugbear (`B`) rules.
+# Enable flake8-django (`DJ`) rules.
+# enable flake8-errmsg (`EM`) rules.
+select = ["E", "F", "B", "DJ", "EM"]
+
+# Never enforce `E501` (line length violations).
+ignore = ["E501"]
+
+# Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
