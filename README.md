@@ -164,3 +164,16 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 ```shell
 python manage.py test
 ```
+
+## Ruff Linting
+
+[flake8-django](https://beta.ruff.rs/docs/rules/#flake8-django-dj)
+
+`ruff check .`
+
+```shell
+ruff.toml 
+
+includes flake8-django "DJ" rules
+
+```
